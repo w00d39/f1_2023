@@ -12,3 +12,9 @@ def open_laps_data():
     
     
     return laps_df
+
+
+def about_laps():
+    about_laps = open_laps_data()
+    
+    return print(about_laps.columns)

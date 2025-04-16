@@ -11,3 +11,8 @@ def open_sprintlaps_data():
     sprintlaps_df = pd.read_csv('data_2023/Sprint_Laps.csv')
     
     return sprintlaps_df
+
+def about_sprintlaps():
+    about_sprintlaps = open_sprintlaps_data()
+
+    return print(about_sprintlaps.columns)

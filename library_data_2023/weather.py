@@ -11,3 +11,8 @@ def open_weather_data():
     weather_df = pd.read_csv('data_2023/Weather.csv')
     
     return weather_df
+
+def about_weather_data():
+    about_weather = open_weather_data()
+    
+    return print(about_weather.columns)

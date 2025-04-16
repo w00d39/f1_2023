@@ -12,3 +12,8 @@ def open_sprintresults_data():
     
     
     return sprintresults_df
+
+def about_sprintresults():
+    about_sprintresults = open_sprintresults_data()
+
+    return print(about_sprintresults.columns)
