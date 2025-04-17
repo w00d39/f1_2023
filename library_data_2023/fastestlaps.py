@@ -13,10 +13,15 @@ def open_fastestlaps_data():
     fastestlaps_df = pd.read_csv(file_path)
 
     # Clean the dataframe
-
+    print("hi")
     #drop the pitouttime, and pitintime because they have nothing in them
 
-    
+    #simple data type conversons
+
+
+    #encoding
+
+    #datatime conversion
     
     
     return fastestlaps_df
