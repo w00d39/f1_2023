@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from sklearn import preprocessing
 
 def open_results_data():
@@ -8,7 +9,10 @@ def open_results_data():
 
     """
     # Load the results data
-    results_df = pd.read_csv('library_data_2023/data_2023/Results.csv')
+    file_path = 'library_data_2023/data_2023/Results.csv'
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"The file {file_path} does not exist.")
+    results_df = pd.read_csv(file_path)
 
 
     #Dropping unnecessary columns: Q1, Q2, Q3
@@ -35,7 +39,7 @@ def open_results_data():
         results_df[i] = pd.to_timedelta(results_df[i], errors='coerce')
 
     #encoding
-    encode_columns = ['Race Type']
+    encode_columns = ['Race Type', 'Status']
 
     label_encoder = preprocessing.LabelEncoder() #creating the label encoder object
 

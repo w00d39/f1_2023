@@ -50,6 +50,11 @@ def open_laps_data():
     for i in dt_columns: # loops thru the columns and converts them to timedelta
         laps_df[i] = pd.to_timedelta(laps_df[i], errors='coerce')
 
+    #timedate
+    timedate_columns = ['LapStartDate']
+    for i in timedate_columns: # loops thru the columns and converts them to datetime
+        laps_df[i] = pd.to_datetime(laps_df[i], errors='coerce')
+        
     #encoding
     encode_column = ['Compound'] #only one to encode
     label_encoder = preprocessing.LabelEncoder() #creating the label encoder object

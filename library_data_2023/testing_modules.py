@@ -1,7 +1,11 @@
 import os
 import laps
 import results
+import sprintresults
+import telemetry
+import weather
 print(os.getcwd())
 
-results_df = results.open_results_data()
-print(results_df.head())
+weather_df = weather.open_weather_data()
+print(weather_df.head())
+print(weather_df.dtypes) 
