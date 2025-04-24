@@ -18,8 +18,9 @@ def open_events_data():
     #dropping column F1ApiSupport because it is not needed for analysis, inplace so we do not take up precious memory with multiple copies
     events_df.drop(columns=['F1ApiSupport'], inplace=True) 
 
-    #converting utilizng one hot encoder so we can preserve the data itself to be readable
-    label_encoder_column_list = ['Country', 'Location', 'EventFormat', 'Session1', 'Session2', 'Session3', 'Session4', 'Session5']
+    #converting utilizng label encoder so we can preserve the data itself to be readable
+    label_encoder_column_list = ['Country', 'Location', 'EventFormat', 'Session1',
+                                  'Session2', 'Session3', 'Session4', 'Session5']
     label_encoder = preprocessing.LabelEncoder() #creating the label encoder object
 
     for i in label_encoder_column_list:
