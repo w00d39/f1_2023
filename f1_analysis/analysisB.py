@@ -1,5 +1,11 @@
 import sys, os
-
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn.linear_model import Ridge
+from sklearn import preprocessing
+import matplotlib.pyplot as plt
 
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -7,11 +13,51 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from library_data_2023 import results, laps, telemetry, events
 
-def mclaren_improvement():
+def mclaren_linreg():
     """
     This function analyzes the performance of the McLaren team in the 2023 Formula 1 season.
-    It compares the results of Lando Norris and Oscar Piastri, focusing on their finishing positions
-    and the number of laps completed in each
+   Focusing on linear regression analysis, it retrieves data from results, laps, telemetry, and events.
+    """
+
+    results_df = results.open_results_data()
+    laps_df = laps.open_laps_data()
+    telemetry_df = telemetry.open_telemetry_data()
+    events_df = events.open_events_data()
+
+
+
+    return results_df, laps_df, telemetry_df, events_df
+
+def mclaren_forestreg():
+    """
+    This function analyzes the performance of the McLaren team in the 2023 Formula 1 season.
+    Focusing on random forest regression analysis, it retrieves data from results, laps, telemetry, and events.
+    """
+
+    results_df = results.open_results_data()
+    laps_df = laps.open_laps_data()
+    telemetry_df = telemetry.open_telemetry_data()
+    events_df = events.open_events_data()
+
+    return results_df, laps_df, telemetry_df, events_df
+
+def mclaren_TimeSeriesCv():
+    """
+    This function analyzes the performance of the McLaren team in the 2023 Formula 1 season.
+    Focusing on time series cross-validation, it retrieves data from results, laps, telemetry, and events.
+    """
+
+    results_df = results.open_results_data()
+    laps_df = laps.open_laps_data()
+    telemetry_df = telemetry.open_telemetry_data()
+    events_df = events.open_events_data()
+
+    return results_df, laps_df, telemetry_df, events_df
+
+def mclaren_ridge():
+    """
+    This function analyzes the performance of the McLaren team in the 2023 Formula 1 season.
+    Focusing on ridge regression analysis, it retrieves data from results, laps, telemetry, and events.
     """
 
     results_df = results.open_results_data()
@@ -23,12 +69,7 @@ def mclaren_improvement():
 
 
 if __name__ == "__main__":
-    results_df, laps_df, telemetry_df, events_df = mclaren_improvement()
-    print("Results DataFrame:")
-    print(results_df.head())
-    print("\nLaps DataFrame:")
-    print(laps_df.head())
-    print("\nTelemetry DataFrame:")
-    print(telemetry_df.head())
-    print("\nEvents DataFrame:")
-    print(events_df.head())
+    print("McLaren Linear Regression Analysis:")
+    results_df, laps_df, telemetry_df, events_df = mclaren_linreg()
+ 
+

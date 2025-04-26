@@ -23,7 +23,7 @@ def highest_tyre_deg():
   
     track_names = events_df[['RoundNumber', 'OfficialEventName']].drop_duplicates() # Get unique track names w/o dupes
 
-     #features i need for this beautiful and hoefully sensical analysis
+     #features i need for this beautiful and hopefully sensical analysis
     laps_df = laps_df[['RoundNumber', 'EventName', 'Compound', 'Compound_index', 'TyreLife', 'LapTime', 'Stint']]
     sprintlaps_df = sprintlaps_df[['RoundNumber', 'EventName', 'Compound', 'Compound_index', 'TyreLife', 'LapTime', 'Stint']]
 
