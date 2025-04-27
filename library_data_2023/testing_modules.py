@@ -1,12 +1,13 @@
 import os
 import laps
 import sprintlaps
+import fastestlaps
+import events
+import results
 import telemetry
 import weather
 print(os.getcwd())
 
-laps_df = laps.open_laps_data()
-sprintlaps_df = sprintlaps.open_sprintlaps_data()
-
-print(laps_df.columns)
-
+fastestlaps_df = fastestlaps.open_fastestlaps_data()
+print(fastestlaps_df.head())
+print(fastestlaps_df.columns)
