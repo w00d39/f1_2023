@@ -65,6 +65,7 @@ def analyze_lap_times(laps_df, events_df, weather_df):
   
 if __name__ == "__main__":
     laps_df, events_df, weather_df = var_lap_times()
+    analyze_lap_times(laps_df, events_df, weather_df)
 
     # Display the first few rows of the DataFrames
     print("Laps DataFrame:")
