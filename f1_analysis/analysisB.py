@@ -15,6 +15,7 @@ def mclaren_linreg():
     This function analyzes the performance of the McLaren team in the 2023 Formula 1 season.
    Focusing on linear regression analysis, it retrieves data from results, laps, telemetry, and events.
     """
+    #home made modules we are using
 
     fastestlaps_df = fastestlaps.open_fastestlaps_data()
     results_df = results.open_results_data()
@@ -22,7 +23,7 @@ def mclaren_linreg():
     telemetry_df = telemetry.open_telemetry_data()
     events_df = events.open_events_data()
 
-   #Filter for Mclaren
+   #Filter for Mclaren, papaya is easier to type than McLaren
     papaya_df = results_df[results_df['TeamName'] == 'McLaren']
 
     #rounds but i need them in order so we can go proper order for progression
@@ -38,24 +39,24 @@ def mclaren_linreg():
         #papaya results for this round
         round_results = papaya_df[papaya_df['RoundNumber'] == i]
 
-        if round_results.empty:
+        if round_results.empty: #error handling :)
             continue
 
         #fastest lap for this round
         fastest_lap = fastestlaps_df[fastestlaps_df['RoundNumber'] == i]
 
-        if len(fastest_lap) > 0:
+        if len(fastest_lap) > 0: #fastest lap exists 
             fastest_lap_time = fastest_lap['LapTime'].min()
 
-            papaya_fastest_lap = fastest_lap[fastest_lap['Team'] == 'McLaren']
+            papaya_fastest_lap = fastest_lap[fastest_lap['Team'] == 'McLaren'] #fastest lap is for the papaya team
 
-            if len(papaya_fastest_lap) > 0:
-                papaya_fastest_lap_time = papaya_fastest_lap['LapTime'].min()
-                gap_to_fastest = (papaya_fastest_lap_time - fastest_lap_time).total_seconds()
+            if len(papaya_fastest_lap) > 0: #if the papaya team has a fastest lap
+                papaya_fastest_lap_time = papaya_fastest_lap['LapTime'].min() #get the lap time for the papaya team
+                gap_to_fastest = (papaya_fastest_lap_time - fastest_lap_time).total_seconds() #convert to total seconds
             else:
-                gap_to_fastest = None
+                gap_to_fastest = None #if papaya team has no fastest lap
         else:
-            gap_to_fastest = None
+            gap_to_fastest = None #if no fastest lap exists
 
         #avg positions and points
         avg_positions = round_results['Position'].mean()
@@ -94,11 +95,12 @@ def mclaren_linreg():
             y = mclaren_df[metric]
             x_clean = x
         
-        if len(y) >= 3:
-            papaya_model = LinearRegression()
+        if len(y) >= 3: #if we have enough data points
+            # Create and fit the model
+            papaya_model = LinearRegression() # lin reg
             papaya_model.fit(x_clean, y)
 
-            reg_results[metric] = {
+            reg_results[metric] = { #metrics
                 'coefficient': papaya_model.coef_[0],
                 'intercept': papaya_model.intercept_,
                 'r_squared': papaya_model.score(x_clean, y)
@@ -110,6 +112,9 @@ def mclaren_linreg():
     }
 
 def mclaren_linreg_plots(mclaren_data, regression_results):
+    """
+    This function generates plots to visualize the performance of the McLaren team in the 2023 Formula 1 season.
+    """
     plt.figure(figsize=(14, 12))
     
     # Plot 1: Race Positions (lower is better)

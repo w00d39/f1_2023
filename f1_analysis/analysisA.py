@@ -72,24 +72,41 @@ def highest_tyre_deg():
 
     deg_df = deg_df.merge(track_names, on='RoundNumber', how='left') #merge the track names with the data
 
-    # Add a direct ranking of tracks by degradation rate
+    # direct ranking of tracks by degradation rate
     track_deg_ranking = deg_df.groupby(['RoundNumber', 'OfficialEventName'])['DegradationRate'].mean().reset_index()
     track_deg_ranking = track_deg_ranking.sort_values('DegradationRate', ascending=False)
     
-    # Feature engineering: Create a weighted degradation feature that emphasizes degradation more
+    # weighted degradation feature that focuses on degradation more
     deg_df['WeightedDegradation'] = deg_df['DegradationRate'] * 3  # Triple the importance
     
-    # Use the weighted feature for clustering
+    # weighted feature for clustering
     features = ['WeightedDegradation', 'MedianLapTime']
     scaler = StandardScaler()
     scaled_features = scaler.fit_transform(deg_df[features])
     
-    # Rest of your K-means code remains the same
+    # my beloved wcss elbow
     wcss = []
     max_clusters = min(10, len(deg_df))
+
+    # WCSS calcing for best cluster number
+    for i in range(1, max_clusters + 1):
+        kmeans_test = KMeans(n_clusters=i, random_state=301, n_init=10)
+        kmeans_test.fit(scaled_features)
+        wcss.append(kmeans_test.inertia_)  # inertia_ is the WCSS value
+
+    # Plotting the WCSS elbow method
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(1, max_clusters + 1), wcss, marker='o', linestyle='-', color='#2C75FF')
+    plt.title('WCSS Elbow Method for Optimal Clusters', fontsize=16)
+    plt.xlabel('Number of Clusters', fontsize=14)
+    plt.ylabel('Within-Cluster Sum of Squares (WCSS)', fontsize=14)
+    plt.grid(True, alpha=0.3, linestyle='--')
+    plt.tight_layout()
+    plt.savefig('wcss_elbow_plot.png')
+    plt.show()
+        
     
-    
-    n_clusters = 5  # Try 5 clusters instead of 6
+    n_clusters = 5  # 5 clusters instead of 6
     kmeans = KMeans(n_clusters=n_clusters, random_state=301, n_init=10)
     
     deg_df['Cluster'] = kmeans.fit_predict(scaled_features)
@@ -109,7 +126,8 @@ if __name__ == "__main__":
     # BEEFY K-MEANS PLOT
     plt.figure(figsize=(20, 12))
     
-    # Set up a custom color palette that matches F1 tire compounds
+    # Set up a custom color palette that matches F1 tire compounds 
+    #scratch that we cant bc its unreadable
     colors = {
         0: '#0F2E68',  # Navy blue (highest degradation)
         1: '#2C75FF',  # Bright blue
@@ -118,18 +136,19 @@ if __name__ == "__main__":
         4: '#0CD1E8',  # Electric blue (lowest degradation)
     }
     
-    # Sort clusters by degradation rate (highest first)
+    # Sort clusters by degradation rate (highest first) 
     cluster_order = deg_df.groupby('Cluster')['DegradationRate'].mean().sort_values(ascending=False).index
     cluster_labels = {i: f"Cluster {cluster_order[i]} (Deg: {deg_df[deg_df['Cluster'] == cluster_order[i]]['DegradationRate'].mean():.4f}s/lap)" for i in range(len(cluster_order))}
     
-    # Get list of top tracks to annotate (top 5 + Bahrain and Spain)
+    #list of top tracks to annotate (top 5 + Bahrain and Spain)
     top_track_names = track_deg_ranking.head(5)['OfficialEventName'].tolist()
     important_tracks = list(set(top_track_names + ['Bahrain Grand Prix', 'Spanish Grand Prix']))
     
-    # Create reference dictionary for letter labels
+    #  reference dictionary for letter labels
     reference_dict = {}
     letter_idx = 0
     letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    #copilot heavy lifted here bc matplotlib is the true op
     
     # Plot each cluster with advanced styling
     for i, cluster in enumerate(cluster_order):
