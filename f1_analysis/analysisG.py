@@ -23,7 +23,6 @@ def team_improvement_data():
     return results_df, events_df, laps_df
 
 def analyze_team_improvement(results_df, events_df, laps_df):
-    # We will only use laps_df for team improvement
     data = laps_df.copy()
 
     # Prepare lap_time_seconds (always positive)

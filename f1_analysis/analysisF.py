@@ -22,15 +22,15 @@ def pit_stops():
     return laps_df, sprintlaps_df
 
 def analyze_pit_stops(laps_df, sprintlaps_df):
-    # Step 1: Create pit_stop_time correctly (always positive)
+    # Create pit_stop_time correctly (always positive)
     sprintlaps_df['PitInTime'] = pd.to_timedelta(sprintlaps_df['PitInTime'])
     sprintlaps_df['PitOutTime'] = pd.to_timedelta(sprintlaps_df['PitOutTime'])
     sprintlaps_df['pit_stop_time'] = (sprintlaps_df['PitOutTime'] - sprintlaps_df['PitInTime']).dt.total_seconds().abs()
 
-    # Step 2: Create fast_stop label
+    # Create fast_stop label
     sprintlaps_df['fast_stop'] = (sprintlaps_df['pit_stop_time'] < sprintlaps_df['pit_stop_time'].median()).astype(int)
 
-    # Step 3: Classification models
+    # Classification models
     X = sprintlaps_df[['pit_stop_time']].fillna(0)
     y = sprintlaps_df['fast_stop']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -46,7 +46,7 @@ def analyze_pit_stops(laps_df, sprintlaps_df):
     print(f"\n[F] Logistic Regression Accuracy on Fast Pit Stops: {accuracy_score(y_test, y_pred_log):.2f}")
     print(f"[F] Random Forest Classifier Accuracy: {accuracy_score(y_test, y_pred_rf):.2f}")
 
-    # Step 4: Regression model (Random Forest Regressor)
+    # Regression model (Random Forest Regressor)
     regression_data = sprintlaps_df[['pit_stop_time']].dropna()
     X_reg = regression_data[['pit_stop_time']]
     y_reg = regression_data['pit_stop_time']
@@ -58,7 +58,7 @@ def analyze_pit_stops(laps_df, sprintlaps_df):
 
     print(f"[F] Random Forest Regressor RMSE for Pit Stop Time: {np.sqrt(mean_squared_error(y_test_reg, y_pred_reg)):.2f} seconds")
 
-    # Step 5: Plot histogram of pit stop times
+    # Plot histogram of pit stop times
     plt.figure(figsize=(10, 6))
     plt.hist(sprintlaps_df['pit_stop_time'].dropna(), bins=25, color='steelblue', edgecolor='black')
     plt.title('Distribution of Pit Stop Times', fontsize=16)
@@ -69,7 +69,7 @@ def analyze_pit_stops(laps_df, sprintlaps_df):
     plt.savefig('histogram_pit_stop_times.png', dpi=300)
     plt.show()
 
-    # Step 6: Rank Teams by Median Pit Stop Time
+    # Rank Teams by Median Pit Stop Time
     print("\nAttempting to rank teams by fastest pit stops...")
 
     try:
