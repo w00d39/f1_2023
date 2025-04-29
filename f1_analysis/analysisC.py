@@ -31,7 +31,7 @@ def preprocess_weather():
 
     #mergin the  weather and laps data
     merged_df = pd.merge(all_laps_df, weather_df, on=['RoundNumber', 'EventName'], how='inner', suffixes=('_lap', '_weather'))
-    
+
      #closest weather reading for each lap
     merged_df['TimeDiff'] = abs((merged_df['Time_lap'] - merged_df['Time_weather']).dt.total_seconds())
     merged_df = (merged_df.sort_values('TimeDiff').groupby(['RoundNumber', 'EventName', 'DriverNumber', 'LapNumber']).first().reset_index())
@@ -48,17 +48,17 @@ def preprocess_weather():
 
     valid_laps = []
 
-    for _, i in merged_df.iterrows():
-        track = i['EventName']
-        time = i['LapTimeSeconds']
+    for _, i in merged_df.iterrows(): #for each lap in merged_df we are going tocheck if its a valid lap 
+        track = i['EventName'] #track name
+        time = i['LapTimeSeconds'] #lap time in seconds
 
         #laps need to be within 3 standard deviations of the median lap time
-        if time <= track_medians[track] + 3 * track_sds[track]:
+        if time <= track_medians[track] + 3 * track_sds[track]: 
             valid_laps.append(True)
         else:
             valid_laps.append(False)
 
-    merged_df['ValidLap'] = valid_laps
+    merged_df['ValidLap'] = valid_laps #adds the valid lap column to the merged_df
     merged_df = merged_df[merged_df['ValidLap']]
 
     return weather_df, laps_df, sprintlaps_df, merged_df
@@ -68,23 +68,23 @@ def feature_forging(df):
     #in case I make an oopsy being a silly goosy
     enhanced_df = df.copy()
     #weather interactions as features
-    enhanced_df['TempHumidityInteraction'] = enhanced_df['AirTemp'] * enhanced_df['Humidity'] / 100
-    enhanced_df['TrackAirTempDelta'] = enhanced_df['TrackTemp'] - enhanced_df['AirTemp']
+    enhanced_df['TempHumidityInteraction'] = enhanced_df['AirTemp'] * enhanced_df['Humidity'] / 100 #humidity * airtemp / 100
+    enhanced_df['TrackAirTempDelta'] = enhanced_df['TrackTemp'] - enhanced_df['AirTemp'] #tracktemp - air temp
 
     #wind direction being circluar if i can
     if 'WindDirection' in enhanced_df.columns:
-        enhanced_df['WindDirSin'] = np.sin(enhanced_df['WindDirection'] * np.pi/180)
-        enhanced_df['WindDirCos'] = np.cos(enhanced_df['WindDirection'] * np.pi/180)
+        enhanced_df['WindDirSin'] = np.sin(enhanced_df['WindDirection'] * np.pi/180) #wind sin direction in radians
+        enhanced_df['WindDirCos'] = np.cos(enhanced_df['WindDirection'] * np.pi/180) #wind cos direction in radians
 
     #one must simply account for rain impact as a feature
-    if 'Rainfall' in enhanced_df.columns:
-        enhanced_df['RainfallPresent'] = (enhanced_df['Rainfall'] > 0).astype(int)
+    if 'Rainfall' in enhanced_df.columns: # if rainfall exists
+        enhanced_df['RainfallPresent'] = (enhanced_df['Rainfall'] > 0).astype(int) # #rainfall present as a binary feature
 
     # Create track-specific features based on general characteristics
     high_speed_tracks = ['Monza', 'Spa', 'Azerbaijan', 'Jeddah', 'Las Vegas']
     high_downforce_tracks = ['Monaco', 'Hungary', 'Singapore', 'Zandvoort']
     
-    enhanced_df['IsHighSpeedTrack'] = enhanced_df['EventName'].apply(
+    enhanced_df['IsHighSpeedTrack'] = enhanced_df['EventName'].apply( 
         lambda x: any(track in x for track in high_speed_tracks)).astype(int)
     enhanced_df['IsHighDownforceTrack'] = enhanced_df['EventName'].apply(
         lambda x: any(track in x for track in high_downforce_tracks)).astype(int)
@@ -119,8 +119,9 @@ def feature_forging(df):
 def weather_gb(df, tuning = False):
     print("Building weather impact model...") #comment later sanity checker
 
+    #features weather data
     weather_features = ['AirTemp', 'Humidity', 'Pressure', 'Rainfall', 'TrackTemp', 'WindDirection', 'WindSpeed']
-
+    #forged features = homemade features
     forged_features = ['TempHumidityInteraction', 'TrackAirTempDelta', 'WindDirSin', 'WindDirCos', 'RainfallPresent', 'IsHighSpeedTrack', 'IsHighDownforceTrack']
 
     tyre_features = []
@@ -169,7 +170,7 @@ def weather_gb(df, tuning = False):
         }
         
         grid_search = GridSearchCV(
-            RandomForestClassifier(random_state=42),
+            RandomForestClassifier(random_state=301),
             param_grid,
             cv=StratifiedKFold(n_splits=5),
             scoring='accuracy',
@@ -185,14 +186,14 @@ def weather_gb(df, tuning = False):
         model = grid_search.best_estimator_
         
     else:
-        # Use optimized parameters directly
+        # Using optimized parameters directly
         model = RandomForestClassifier(
             n_estimators=300,
             max_depth=15, 
             min_samples_split=5,
             min_samples_leaf=2,
             class_weight='balanced',
-            random_state=42
+            random_state=301
         )
         model.fit(X_train, y_train)
 
@@ -213,7 +214,7 @@ def weather_gb(df, tuning = False):
         n_estimators=200, 
         learning_rate=0.1, 
         max_depth=5, 
-        random_state=42
+        random_state=301
     )
     
     gb_model.fit(X_train, y_train)

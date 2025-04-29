@@ -197,17 +197,6 @@ def mclaren_linreg_plots(mclaren_data, regression_results):
                               (metric == 'TotalPoints' and results['coefficient'] > 0) else "declining"
         print(f"- {metric}: {trend} at a rate of {abs(results['coefficient']):.3f} per race (R²: {results['r_squared']:.2f})")
 
-    """
-    This function analyzes the performance of the McLaren team in the 2023 Formula 1 season.
-    Focusing on random forest regression analysis, it retrieves data from results, laps, telemetry, and events.
-    """
-
-    results_df = results.open_results_data()
-    laps_df = laps.open_laps_data()
-    telemetry_df = telemetry.open_telemetry_data()
-    events_df = events.open_events_data()
-
-    return results_df, laps_df, telemetry_df, events_df
 
 
 if __name__ == "__main__":

@@ -706,7 +706,7 @@ def corners():
 
         # Calculating additional metrics 
         segment_features['Speed_to_Distance_Ratio'] = segment_features['Speed_mean'] / segment_features['Segment_Length'] #the ratio here is important so we can get a better idea of how fast the car is going in relation to the distance dude is sending it
-        segment_features['Braking_Intensity'] = segment_features['Brake_max'] * segment_features['Segment_Duration'].dt.total_seconds() #how hard we think he is braking in the segment based on this
+        segment_features['Braking_Intensity'] = segment_features['Brake_numeric_max'] * segment_features['Segment_Duration'].dt.total_seconds() #how hard we think he is braking in the segment based on this
         
         # Create performance category for classification (based on minimum speed)
         # FIXED: Added error handling for qcut operation
@@ -738,7 +738,7 @@ def corners():
         features = segment_features[[
             'Speed_min', 'Speed_mean', 'Speed_std',
             'Throttle_min', 'Throttle_mean', 'Throttle_max',
-            'Brake_mean', 'Brake_max',
+            'Brake_numeric_mean', 'Brake_numeric_max',
             'Segment_Length', 
             'Compound_index', 'TyreLife', 'Stint'
         ]].copy()
@@ -935,11 +935,11 @@ def corners():
 
 
 if __name__ == "__main__":
-    #print(straights_speed())
-    #print(tyre_deg())
+    print(straights_speed())
+  
 
-    results = corners()
-    if results:
-        print("Function completed successfully")
-    else:
-        print("Function returned None (failed)")
+    # results = corners()
+    # if results:
+    #     print("Function completed successfully")
+    # else:
+    #     print("Function returned None (failed)")
