@@ -120,8 +120,7 @@ if __name__ == "__main__":
     
     # Sort clusters by degradation rate (highest first)
     cluster_order = deg_df.groupby('Cluster')['DegradationRate'].mean().sort_values(ascending=False).index
-    cluster_labels = {i: f"Cluster {cluster_order[i]} (Deg: {deg_df[deg_df['Cluster'] == cluster_order[i]]['DegradationRate'].mean():.4f}s/lap)" 
-                     for i in range(len(cluster_order))}
+    cluster_labels = {i: f"Cluster {cluster_order[i]} (Deg: {deg_df[deg_df['Cluster'] == cluster_order[i]]['DegradationRate'].mean():.4f}s/lap)" for i in range(len(cluster_order))}
     
     # Get list of top tracks to annotate (top 5 + Bahrain and Spain)
     top_track_names = track_deg_ranking.head(5)['OfficialEventName'].tolist()

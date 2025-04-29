@@ -12,8 +12,8 @@ print(os.getcwd())
 
 
 
+laps_df = laps.open_laps_data()
 
-weather_df = weather.open_weather_data()
-print(weather_df.head())
-print(weather_df.columns)
+print(laps_df['TrackStatus'].unique())
+
 
